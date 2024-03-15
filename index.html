@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Booking</title>
+</head>
+<body>
+<h1>Bus Booking</h1>
+<style>
+    h1{
+        text-align: center;
+    }
+    .filter-container{
+        text-align: center;
+    }
+    .booking-list-item button {
+        margin-right: 5px; 
+    }
+    #bookingList{
+        list-style-type: none;
+    }
+</style>
+
+<div id="busBooking">
+    <div class="filter-container">
+        <label>Filter</label>
+        <select id="filterSelect">
+            <option value="All">All</option>
+            <option value="Bus1">Bus1</option>
+            <option value="Bus2">Bus2</option>
+            <option value="Bus3">Bus3</option>
+        </select>
+    </div>
+    <div>
+        <label>Name:</label>
+        <input type="text" id="nameInput">
+    </div>
+    <div>
+        <label>Email:</label>
+        <input type="text" id="emailInput">
+    </div>
+    <div>
+        <label>Phone:</label>
+        <input type="number" id="phnoInput">
+    </div>
+    <div>
+        <label>Car Number:</label>
+        <select id="busSelect">
+            <option value="Bus1">Bus1</option>
+            <option value="Bus2">Bus2</option>
+            <option value="Bus3">Bus3</option>
+        </select>
+    </div>
+    <div>
+        <button id="bookButton">Book</button>
+    </div>
+    <ul id="bookingList"></ul>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const data = [];
+        const nameInput = document.getElementById('nameInput');
+        const emailInput = document.getElementById('emailInput');
+        const phnoInput = document.getElementById('phnoInput');
+        const busSelect = document.getElementById('busSelect');
+        const filterSelect = document.getElementById('filterSelect');
+        const bookingList = document.getElementById('bookingList');
+        
+        function renderList() {
+            bookingList.innerHTML = '';
+            data.forEach((item, index) => {
+                if (filterSelect.value === 'All' || item.bus === filterSelect.value) {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `${item.name} ${item.email} ${item.phNo} <strong>${item.bus}</strong>`;
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.style.marginRight = '1px'; 
+                    deleteButton.addEventListener('click', () => deleteHandler(index));
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Edit';
+                    editButton.style.marginLeft = '5px'; 
+                    editButton.addEventListener('click', () => editHandler(index));
+                    listItem.appendChild(deleteButton);
+                    listItem.appendChild(editButton);
+                    bookingList.appendChild(listItem);
+                }
+            });
+        }
+        
+        function bookHandler() {
+            const enteredName = nameInput.value;
+            const enteredEmail = emailInput.value;
+            const enteredPhno = phnoInput.value;
+            const selectedBus = busSelect.value;
+            
+            data.push({ name: enteredName, email: enteredEmail, phNo: enteredPhno, bus: selectedBus });
+            renderList();
+            
+            nameInput.value = '';
+            emailInput.value = '';
+            phnoInput.value = '';
+        }
+        
+        function deleteHandler(index) {
+            data.splice(index, 1);
+            renderList();
+        }
+        
+        function editHandler(index) {
+            const { name, email, phNo, bus } = data[index];
+            nameInput.value = name;
+            emailInput.value = email;
+            phnoInput.value = phNo;
+            busSelect.value = bus;
+            deleteHandler(index);
+        }
+        
+        document.getElementById('bookButton').addEventListener('click', bookHandler);
+        filterSelect.addEventListener('change', renderList);
+    });
+    </script>
+    
+    
+
+</body>
+</html>
